@@ -85,9 +85,6 @@ function Index() {
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const lessons = useMemo(() => buildLessons(data), [data]);
-  const stopped = useRef(false);
-
-  useEffect(() => () => stopped.current === false && void 0, []);
   useEffect(() => {
     return () => {
       if (timer.current) clearTimeout(timer.current);
@@ -215,7 +212,7 @@ function Index() {
         </TabsContent>
 
         <TabsContent value="evolve" className="space-y-4">
-          <Pipeline active={stage} running={running} stat={last} />
+          <Pipeline active={stage} running={running} stat={last ?? undefined} />
 
           <div className="grid gap-4 lg:grid-cols-[2fr_1fr]">
             <div className="panel rounded-lg p-4">

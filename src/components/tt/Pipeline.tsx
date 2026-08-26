@@ -60,7 +60,7 @@ export function Pipeline({
 }: {
   active: StageKey | null;
   running: boolean;
-  stat?: GenerationStat;
+  stat?: GenerationStat | undefined;
 }) {
   return (
     <div className="panel rounded-lg p-4">
