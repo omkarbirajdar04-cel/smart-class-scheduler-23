@@ -192,13 +192,13 @@ function Index() {
 
       <Tabs value={tab} onValueChange={setTab}>
         <TabsList className="mb-4">
-          <TabsTrigger value="setup">
+          <TabsTrigger className="gap-1.5" value="setup">
             <Sliders className="size-4" /> Inputs
           </TabsTrigger>
-          <TabsTrigger value="evolve">
+          <TabsTrigger className="gap-1.5" value="evolve">
             <TrendingUp className="size-4" /> Evolution
           </TabsTrigger>
-          <TabsTrigger value="results">
+          <TabsTrigger className="gap-1.5" value="results">
             <Table2 className="size-4" /> Timetable
           </TabsTrigger>
         </TabsList>
