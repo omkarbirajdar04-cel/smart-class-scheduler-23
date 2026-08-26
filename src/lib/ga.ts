@@ -134,8 +134,8 @@ export function evaluate(d: Dataset, lessons: Lesson[], genes: Chromosome): Indi
   const P = d.config.periods.length;
 
   lessons.forEach((l, i) => {
-    const g = genes[i];
-    const room = d.rooms[g.room % d.rooms.length];
+    const g = genes[i]!;
+    const room = d.rooms[g.room % d.rooms.length]!;
     const subj = d.subjects.find((s) => s.id === l.subjectId)!;
     const group = d.classes.find((c) => c.id === l.classId)!;
     const day = Math.floor(g.slot / P);
@@ -163,14 +163,14 @@ export function evaluate(d: Dataset, lessons: Lesson[], genes: Chromosome): Indi
   });
 
   for (const [k, n] of teacherDay) {
-    const tid = k.split("#")[0];
+    const tid = k.split("#")[0]!;
     const t = d.teachers.find((x) => x.id === tid);
     if (t && n > t.maxPerDay) conflicts.teacherOverload += n - t.maxPerDay;
   }
   for (const arr of classDaySlots.values()) {
     const sorted = [...arr].sort((a, b) => a - b);
     for (let i = 1; i < sorted.length; i++) {
-      const gap = sorted[i] - sorted[i - 1] - 1;
+      const gap = sorted[i]! - sorted[i - 1]! - 1;
       if (gap > 0) conflicts.gaps += gap;
     }
   }
@@ -200,9 +200,9 @@ export function initialPopulation(d: Dataset, lessons: Lesson[]): Individual[] {
 }
 
 function tournament(pop: Individual[], k = 3): Individual {
-  let best = pop[ri(pop.length)];
+  let best = pop[ri(pop.length)]!;
   for (let i = 1; i < k; i++) {
-    const c = pop[ri(pop.length)];
+    const c = pop[ri(pop.length)]!;
     if (c.fitness > best.fitness) best = c;
   }
   return best;
@@ -212,7 +212,7 @@ function crossover(a: Individual, b: Individual): Chromosome {
   const n = a.genes.length;
   const p1 = ri(n);
   const p2 = p1 + ri(Math.max(1, n - p1));
-  return a.genes.map((g, i) => (i >= p1 && i <= p2 ? { ...b.genes[i] } : { ...g }));
+  return a.genes.map((g, i) => (i >= p1 && i <= p2 ? { ...b.genes[i]! } : { ...g }));
 }
 
 function mutate(d: Dataset, genes: Chromosome, rate: number) {
@@ -259,7 +259,7 @@ export function stepGeneration(
   }
 
   const evaluated = next.sort((x, y) => y.fitness - x.fitness);
-  const best = evaluated[0];
+  const best = evaluated[0]!;
   const avg = evaluated.reduce((s, i) => s + i.fitness, 0) / evaluated.length;
 
   return {
@@ -269,7 +269,7 @@ export function stepGeneration(
       gen,
       best: best.fitness,
       avg,
-      worst: evaluated[evaluated.length - 1].fitness,
+      worst: evaluated[evaluated.length - 1]!.fitness,
       hardConflicts: best.conflicts.total,
     },
     sample: {
@@ -293,13 +293,13 @@ export type Assignment = {
 export function decode(d: Dataset, lessons: Lesson[], ind: Individual): Assignment[] {
   const P = d.config.periods.length;
   const rows: Assignment[] = lessons.map((l, i) => {
-    const g = ind.genes[i];
+    const g = ind.genes[i]!;
     return {
       lesson: l,
       slot: g.slot,
       day: Math.floor(g.slot / P),
       period: g.slot % P,
-      roomId: d.rooms[g.room % d.rooms.length].id,
+      roomId: d.rooms[g.room % d.rooms.length]!.id,
       conflicted: false,
     };
   });
